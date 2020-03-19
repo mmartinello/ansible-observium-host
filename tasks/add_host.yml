@@ -1,0 +1,4 @@
+---
+- name: Add device to Observium on Observium host
+  shell: "{{ observium_add_device_cmd }}"
+  delegate_to: "{{ observium_host }}"

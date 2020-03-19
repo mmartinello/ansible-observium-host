@@ -1,0 +1,4 @@
+---
+- import_task: vars.yml
+
+- import_task: add_host.yml

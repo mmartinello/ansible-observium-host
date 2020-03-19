@@ -1,0 +1,42 @@
+---
+# Observium host (needs to be into the inventory!)
+observium_host:
+
+# Observium path (in Observium host)
+observium_path: /opt/observium
+
+# SNMP Version (v1|v2c|v3)
+observium_snmp_version: v2c
+
+# SNMP Community
+observium_snmp_community: public
+
+# SNMP Port
+observium_snmp_port: 161
+
+# SNMP Protocol (udp|udp6|tcp|tcp6)
+observium_snmp_protocol: udp
+
+# SNMP Context
+observium_snmp_context: false
+
+# Enable SNMP V3 default mode
+onservium_snmp_v3_default: true
+
+# Enable SNMP V3 Auth
+observium_snmp_v3_auth_enable: false
+
+# Enable SNMP V3 Privacy
+observium_snmp_v3_priv_enable: false
+
+# SNMP V3 User
+observium_snmp_v3_user: false
+
+# SNMP V3 Password
+observium_snmp_v3_password: false
+
+# SNMP V3 Auth Algorithm (sha|md5)
+observium_snmp_v3_auth_algorithm: false
+
+# SNMP V3 Encryption Algorithm (aes|des)
+observium_snmp_v3_crypto_algorithm: false

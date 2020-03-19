@@ -1,0 +1,69 @@
+---
+- name: Set command parameters for SNMP version 1 and 2
+  set_fact:
+    observium_parameters: "{{ observium_snmp_community }} {{ observium_snmp_version }} {{ observium_snmp_port }} {{ observium_snmp_protocol }}"
+  when: observium_snmp_version in ['v1', 'v2c']
+
+- name: Set SNMP v3 'default' mode
+  set_fact:
+    observium_snmp_v3_mode: any
+  when: observium_snmp_version == "v3" and onservium_snmp_v3_default == true
+
+- name: Set SNMP v3 'no auth, no priv' mode
+  set_fact:
+    observium_snmp_v3_mode: nanp
+  when: observium_snmp_version == "v3" and onservium_snmp_v3_default == false and observium_snmp_v3_auth_enable == false and observium_snmp_v3_priv_enable == false
+
+- name: Set SNMP v3 'auth, no priv' mode
+  set_fact:
+    observium_snmp_v3_mode: anp
+  when: observium_snmp_version == "v3" and onservium_snmp_v3_default == false and observium_snmp_v3_auth_enable == true and observium_snmp_v3_priv_enable == false
+
+- name: Set SNMP v3 'auth, priv' mode
+  set_fact:
+    observium_snmp_v3_mode: ap
+  when: observium_snmp_version == "v3" and onservium_snmp_v3_default == false and observium_snmp_v3_auth_enable == true and observium_snmp_v3_priv_enable == true
+
+- name: Set command parameters for SNMP version 3
+  set_fact:
+    observium_parameters: "{{ observium_snmp_v3_mode }} {{ observium_snmp_version }}"
+  when: observium_snmp_version == "v3"
+
+- name: Set command parameters for SNMP version 3 default/no auth mode (add user if given)
+  set_fact:
+    observium_parameters: "{{ observium_snmp_v3_mode }} {{ observium_snmp_version }}"
+  when: observium_snmp_version == "v3" and observium_snmp_v3_mode in ['any', 'nanp']
+
+- name: Set command parameters for SNMP version 3 with auth enabled (add user and password if given)
+  set_fact:
+    observium_parameters: "{{ observium_parameters }} {{ observium_snmp_v3_user }} {{ observium_snmp_v3_password }}"
+  when: observium_snmp_version == "v3" and observium_snmp_v3_mode in ['anp', 'ap'] and observium_snmp_v3_user != false and observium_snmp_v3_password != false
+
+- name: Set command parameters for SNMP version 3 with auth enabled and priv disabled (add auth algorithm if given)
+  set_fact:
+    observium_parameters: "{{ observium_parameters }} {{ observium_snmp_v3_auth_algorithm }}"
+  when: observium_snmp_version == "v3" and observium_snmp_v3_mode in ['anp', 'ap'] and observium_snmp_v3_auth_algorithm != false
+
+- name: Set command parameters for SNMP version 3 with auth amd priv enabled (add encryption algorithm if given)
+  set_fact:
+    observium_parameters: "{{ observium_parameters }} {{ observium_snmp_v3_crypto_algorithm }}"
+  when: observium_snmp_version == "v3" and observium_snmp_v3_mode == "ap" and observium_snmp_v3_crypto_algorithm != false
+
+- name: Set command parameters (add port if given)
+  set_fact:
+    observium_parameters: "{{ observium_parameters }} {{ observium_snmp_port }}"
+  when: observium_snmp_port != false
+
+- name: Set command parameters (add protocol if given)
+  set_fact:
+    observium_parameters: "{{ observium_parameters }} {{ observium_snmp_protocol }}"
+  when: observium_snmp_protocol != false
+
+- name: Set command parameters (add context if given)
+  set_fact:
+    observium_parameters: "{{ observium_parameters }} {{ observium_snmp_context }}"
+  when: observium_snmp_context != false
+
+- name: Set command
+  set_fact:
+    observium_add_device_cmd: "{{ observium_path }}/add_device.php {{ ansible_hostname }} {{ observium_parameters }}"
